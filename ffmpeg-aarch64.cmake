@@ -36,13 +36,11 @@ if(FFMPEG_SRC_BUILD)
 
     include(ExternalProject)
     ExternalProject_Add(ffmpeg
-        # URL https://ffmpeg.org/releases/ffmpeg-4.3.3.tar.gz # 版本太高不支持
-        URL https://git.ffmpeg.org/gitweb/ffmpeg.git/snapshot/390d6853d0ef408007feb39c0040682c81c02751.tar.gz
+        URL https://ffmpeg.org/releases/ffmpeg-4.3.3.tar.gz # 版本太高不支持
         BUILD_IN_SOURCE TRUE
         DEPENDS ${CUDA_FFNVCODEC_DEPEDS_HEADER}
         UPDATE_COMMAND apt update && apt install -y libgnutls28-dev yasm nasm liblzma-dev libbz2-dev
-        ./configure --prefix=${CMAKE_BINARY_DIR}/ffmpeg --enable-pic --enable-gnutls --disable-programs --enable-nonfree --enable-cuda-nvcc
-        CONFIGURE_COMMAND bash -c "PKG_CONFIG_PATH=${ffmpeg_INSTALL_PREFIX}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH} ./configure --prefix=${ffmpeg_INSTALL_PREFIX} --enable-gnutls --enable-pic --disable-doc --disable-programs ${FFMPEG_CUDA_FLAGS}"
+        CONFIGURE_COMMAND bash -c "./configure --prefix=${ffmpeg_INSTALL_PREFIX} --enable-gnutls --enable-pic --disable-doc --disable-programs ${FFMPEG_CUDA_FLAGS}"
         BUILD_COMMAND ${MAKE_EXE} -j
         INSTALL_COMMAND ${ffmpeg_install_commands}
         LOG_CONFIGURE TRUE
@@ -59,7 +57,7 @@ else(FFMPEG_SRC_BUILD)
     endif(ENABLE_CUDA)
 
     if(CMAKE_SYSTEM_PROCESSOR STREQUAL aarch64)
-        set(FFMPEG_TAR_URL https://assets.ai-team.dev/libs/ffmpeg-aarch64.tar.gz)
+        set(FFMPEG_TAR_URL https://assets.ai-team.dev/libs/ffmpeg-4.3.3-aarch64.tar.gz)
     endif()
 
     include(FetchContent)
